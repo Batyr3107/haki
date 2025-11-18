@@ -53,7 +53,7 @@ export async function GET(
     }
 
     // Calculate average rating
-    const totalRating = lifehack.ratings.reduce((sum, rating) => sum + rating.value, 0)
+    const totalRating = lifehack.ratings.reduce((sum: number, rating: { value: number }) => sum + rating.value, 0)
     const averageRating = lifehack.ratings.length > 0 ? totalRating / lifehack.ratings.length : 0
 
     return NextResponse.json({

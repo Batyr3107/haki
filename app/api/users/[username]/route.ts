@@ -48,8 +48,8 @@ export async function GET(
     let totalRatingPoints = 0
     let totalRatingsReceived = 0
 
-    user.lifehacks.forEach(lifehack => {
-      lifehack.ratings.forEach(rating => {
+    user.lifehacks.forEach((lifehack: any) => {
+      lifehack.ratings.forEach((rating: { value: number }) => {
         totalRatingPoints += rating.value
         totalRatingsReceived++
       })
@@ -60,8 +60,8 @@ export async function GET(
       : 0
 
     // Add rating statistics to lifehacks
-    const lifehacksWithStats = user.lifehacks.map(lifehack => {
-      const totalRating = lifehack.ratings.reduce((sum, rating) => sum + rating.value, 0)
+    const lifehacksWithStats = user.lifehacks.map((lifehack: any) => {
+      const totalRating = lifehack.ratings.reduce((sum: number, rating: { value: number }) => sum + rating.value, 0)
       const averageRating = lifehack.ratings.length > 0 ? totalRating / lifehack.ratings.length : 0
 
       return {

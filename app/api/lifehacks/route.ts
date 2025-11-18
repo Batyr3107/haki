@@ -54,8 +54,8 @@ export async function GET(request: Request) {
     })
 
     // Calculate average rating for each lifehack
-    const lifehacksWithRatings = lifehacks.map(lifehack => {
-      const totalRating = lifehack.ratings.reduce((sum, rating) => sum + rating.value, 0)
+    const lifehacksWithRatings = lifehacks.map((lifehack: any) => {
+      const totalRating = lifehack.ratings.reduce((sum: number, rating: { value: number }) => sum + rating.value, 0)
       const averageRating = lifehack.ratings.length > 0 ? totalRating / lifehack.ratings.length : 0
 
       return {
