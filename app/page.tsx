@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import LifehackCard from '@/components/LifehackCard'
 import ErrorMessage from '@/components/ErrorMessage'
+import { SkeletonGrid } from '@/components/SkeletonCard'
 
 interface Lifehack {
   id: string
@@ -194,10 +195,7 @@ export default function Home() {
 
       {/* Lifehacks grid */}
       {loading ? (
-        <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <p className="mt-4 text-gray-600">Загрузка лайфхаков...</p>
-        </div>
+        <SkeletonGrid count={9} />
       ) : error ? (
         <ErrorMessage message={error} onRetry={fetchLifehacks} />
       ) : paginatedLifehacks.length > 0 ? (
