@@ -24,6 +24,7 @@ model User {
   lifehacks Lifehack[]
   ratings   Rating[]
   comments  Comment[]
+  favorites Favorite[]
 }
 
 model Lifehack {
@@ -32,6 +33,7 @@ model Lifehack {
   description String
   content     String
   category    String
+  views       Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -40,6 +42,7 @@ model Lifehack {
 
   ratings     Rating[]
   comments    Comment[]
+  favorites   Favorite[]
 }
 
 model Rating {
@@ -67,4 +70,17 @@ model Comment {
 
   lifehackId  String
   lifehack    Lifehack @relation(fields: [lifehackId], references: [id], onDelete: Cascade)
+}
+
+model Favorite {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  lifehackId  String
+  lifehack    Lifehack @relation(fields: [lifehackId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lifehackId])
 }

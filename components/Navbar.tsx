@@ -24,6 +24,9 @@ export default function Navbar() {
                 <Link href="/create" className="hover:text-blue-200 transition">
                   Создать лайфхак
                 </Link>
+                <Link href="/favorites" className="hover:text-blue-200 transition">
+                  ⭐ Избранное
+                </Link>
                 <Link href={`/profile/${session.user.username}`} className="hover:text-blue-200 transition">
                   Мой профиль
                 </Link>

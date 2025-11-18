@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from 'react'
 import LifehackCard from '@/components/LifehackCard'
 import ErrorMessage from '@/components/ErrorMessage'
 import { SkeletonGrid } from '@/components/SkeletonCard'
+import { useDebounce } from '@/lib/hooks'
 
 interface Lifehack {
   id: string
@@ -32,6 +33,9 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState<SortOption>('newest')
   const [currentPage, setCurrentPage] = useState(1)
+
+  // Debounced search for better performance
+  const debouncedSearchQuery = useDebounce(searchQuery, 300)
 
   const categories = [
     { value: 'all', label: 'Все' },
@@ -77,9 +81,9 @@ export default function Home() {
   const filteredAndSortedLifehacks = useMemo(() => {
     let result = [...lifehacks]
 
-    // Filter by search query
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase()
+    // Filter by debounced search query for better performance
+    if (debouncedSearchQuery.trim()) {
+      const query = debouncedSearchQuery.toLowerCase()
       result = result.filter(
         (lifehack) =>
           lifehack.title.toLowerCase().includes(query) ||
@@ -109,7 +113,7 @@ export default function Home() {
     }
 
     return result
-  }, [lifehacks, searchQuery, sortBy])
+  }, [lifehacks, debouncedSearchQuery, sortBy])
 
   // Pagination
   const totalPages = Math.ceil(filteredAndSortedLifehacks.length / ITEMS_PER_PAGE)
@@ -122,7 +126,7 @@ export default function Home() {
   // Reset to page 1 when search or filters change
   useEffect(() => {
     setCurrentPage(1)
-  }, [searchQuery, sortBy])
+  }, [debouncedSearchQuery, sortBy])
 
   return (
     <div className="container mx-auto px-4 py-8">
