@@ -6,7 +6,11 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import { ru } from 'date-fns/locale'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import RatingStars from '@/components/RatingStars'
+import ShareButtons from '@/components/ShareButtons'
+import FavoriteButton from '@/components/FavoriteButton'
 
 interface Lifehack {
   id: string
@@ -166,9 +170,43 @@ export default function LifehackPage({ params }: { params: { id: string } }) {
             </span>
           </div>
 
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {lifehack.title}
-          </h1>
+          <div className="flex justify-between items-start mb-4">
+            <h1 className="text-4xl font-bold text-gray-900 flex-1">
+              {lifehack.title}
+            </h1>
+            <div className="flex items-center gap-2">
+              <FavoriteButton lifehackId={lifehack.id} size="lg" />
+              {session?.user?.id === lifehack.author.id && (
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => router.push(`/lifehack/${lifehack.id}/edit`)}
+                    className="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm"
+                  >
+                    ✏️ Редактировать
+                  </button>
+                  <button
+                    onClick={async () => {
+                      if (confirm('Вы уверены, что хотите удалить этот лайфхак?')) {
+                        try {
+                          const response = await fetch(`/api/lifehacks/${lifehack.id}/edit`, {
+                            method: 'DELETE',
+                          })
+                          if (response.ok) {
+                            router.push('/')
+                          }
+                        } catch (error) {
+                          console.error('Error deleting lifehack:', error)
+                        }
+                      }
+                    }}
+                    className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition text-sm"
+                  >
+                    🗑️ Удалить
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
 
           <div className="flex items-center gap-4 text-gray-600 mb-6">
             <Link
@@ -187,10 +225,40 @@ export default function LifehackPage({ params }: { params: { id: string } }) {
 
           <p className="text-lg text-gray-700 mb-6">{lifehack.description}</p>
 
-          <div className="prose max-w-none mb-8">
-            <div className="whitespace-pre-wrap text-gray-800">
+          <div className="prose prose-blue max-w-none mb-8">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              className="text-gray-800"
+              components={{
+                h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mt-6 mb-4" {...props} />,
+                h2: ({ node, ...props }) => <h2 className="text-2xl font-bold mt-5 mb-3" {...props} />,
+                h3: ({ node, ...props }) => <h3 className="text-xl font-bold mt-4 mb-2" {...props} />,
+                p: ({ node, ...props }) => <p className="mb-4 leading-7" {...props} />,
+                ul: ({ node, ...props }) => <ul className="list-disc list-inside mb-4 space-y-2" {...props} />,
+                ol: ({ node, ...props }) => <ol className="list-decimal list-inside mb-4 space-y-2" {...props} />,
+                li: ({ node, ...props }) => <li className="ml-4" {...props} />,
+                code: ({ node, className, children, ...props }) => {
+                  const inline = !className
+                  return inline ? (
+                    <code className="bg-gray-100 px-1.5 py-0.5 rounded text-sm font-mono text-red-600" {...props}>
+                      {children}
+                    </code>
+                  ) : (
+                    <code className="block bg-gray-100 p-4 rounded-lg overflow-x-auto text-sm font-mono" {...props}>
+                      {children}
+                    </code>
+                  )
+                },
+                blockquote: ({ node, ...props }) => (
+                  <blockquote className="border-l-4 border-blue-500 pl-4 italic my-4 text-gray-700" {...props} />
+                ),
+                a: ({ node, ...props }) => (
+                  <a className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer" {...props} />
+                ),
+              }}
+            >
               {lifehack.content}
-            </div>
+            </ReactMarkdown>
           </div>
 
           {/* Rating section */}
@@ -231,6 +299,15 @@ export default function LifehackPage({ params }: { params: { id: string } }) {
                 , чтобы оценить этот лайфхак
               </p>
             )}
+          </div>
+
+          {/* Share section */}
+          <div className="border-t pt-6 mt-6">
+            <ShareButtons
+              url={typeof window !== 'undefined' ? window.location.href : ''}
+              title={lifehack.title}
+              description={lifehack.description}
+            />
           </div>
         </div>
 

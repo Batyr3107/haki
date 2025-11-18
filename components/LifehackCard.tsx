@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import { ru } from 'date-fns/locale'
+import FavoriteButton from './FavoriteButton'
 
 interface LifehackCardProps {
   lifehack: {
@@ -19,9 +20,10 @@ interface LifehackCardProps {
     ratingsCount?: number
     commentsCount?: number
   }
+  showFavorite?: boolean
 }
 
-export default function LifehackCard({ lifehack }: LifehackCardProps) {
+export default function LifehackCard({ lifehack, showFavorite = true }: LifehackCardProps) {
   const getCategoryColor = (category: string) => {
     const colors: { [key: string]: string } = {
       'технологии': 'bg-blue-100 text-blue-800',
@@ -36,35 +38,43 @@ export default function LifehackCard({ lifehack }: LifehackCardProps) {
   }
 
   return (
-    <Link href={`/lifehack/${lifehack.id}`}>
-      <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow p-6 cursor-pointer border border-gray-200">
-        <div className="flex justify-between items-start mb-3">
-          <h3 className="text-xl font-bold text-gray-900 flex-1">{lifehack.title}</h3>
-          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getCategoryColor(lifehack.category)}`}>
-            {lifehack.category}
-          </span>
-        </div>
-
-        <p className="text-gray-600 mb-4 line-clamp-2">{lifehack.description}</p>
-
-        <div className="flex items-center justify-between text-sm text-gray-500">
-          <div className="flex items-center gap-4">
-            <span className="font-medium">👤 {lifehack.author.name || lifehack.author.username}</span>
-            <span>{formatDistanceToNow(new Date(lifehack.createdAt), { addSuffix: true, locale: ru })}</span>
+    <div className="relative">
+      <Link href={`/lifehack/${lifehack.id}`}>
+        <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow p-6 cursor-pointer border border-gray-200">
+          <div className="flex justify-between items-start mb-3">
+            <h3 className="text-xl font-bold text-gray-900 flex-1 pr-2">{lifehack.title}</h3>
+            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getCategoryColor(lifehack.category)}`}>
+              {lifehack.category}
+            </span>
           </div>
 
-          <div className="flex items-center gap-3">
-            {lifehack.averageRating !== undefined && lifehack.ratingsCount !== undefined && (
-              <span className="flex items-center gap-1">
-                ⭐ {lifehack.averageRating.toFixed(1)} ({lifehack.ratingsCount})
-              </span>
-            )}
-            {lifehack.commentsCount !== undefined && (
-              <span>💬 {lifehack.commentsCount}</span>
-            )}
+          <p className="text-gray-600 mb-4 line-clamp-2">{lifehack.description}</p>
+
+          <div className="flex items-center justify-between text-sm text-gray-500">
+            <div className="flex items-center gap-4">
+              <span className="font-medium">👤 {lifehack.author.name || lifehack.author.username}</span>
+              <span>{formatDistanceToNow(new Date(lifehack.createdAt), { addSuffix: true, locale: ru })}</span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {lifehack.averageRating !== undefined && lifehack.ratingsCount !== undefined && (
+                <span className="flex items-center gap-1">
+                  ⭐ {lifehack.averageRating.toFixed(1)} ({lifehack.ratingsCount})
+                </span>
+              )}
+              {lifehack.commentsCount !== undefined && (
+                <span>💬 {lifehack.commentsCount}</span>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+
+      {showFavorite && (
+        <div className="absolute top-2 right-2 z-10">
+          <FavoriteButton lifehackId={lifehack.id} size="sm" />
+        </div>
+      )}
+    </div>
   )
 }

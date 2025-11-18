@@ -52,14 +52,22 @@ async function main() {
     data: {
       title: 'Быстрая очистка клавиатуры',
       description: 'Простой способ очистить клавиатуру от пыли и крошек за 2 минуты',
-      content: `Используйте Post-it стикер для очистки клавиатуры:
+      content: `## Используйте Post-it стикер для очистки клавиатуры
+
+### Что понадобится:
+- Обычный **Post-it** стикер
+- 2 минуты времени
+
+### Инструкция:
 
 1. Возьмите обычный Post-it стикер
 2. Проведите клейкой стороной между клавишами
 3. Пыль и мелкие частицы прилипнут к стикеру
 4. Повторите для всей клавиатуры
 
-Это быстрее и эффективнее баллончика со сжатым воздухом!`,
+> **Совет:** Это быстрее и эффективнее баллончика со сжатым воздухом!
+
+*Периодичность:* рекомендуется делать 1-2 раза в месяц.`,
       category: 'технологии',
       authorId: user1.id,
     },
@@ -123,14 +131,27 @@ async function main() {
     data: {
       title: 'Экономия на кофе: термос вместо кофейни',
       description: 'Как сэкономить 30000 рублей в год на кофе',
-      content: `Простая математика экономии:
+      content: `## Простая математика экономии
 
-Кофе в кофейне: 200₽ × 5 дней × 4 недели = 4000₽/месяц
-Кофе дома в термосе: 30₽ × 5 дней × 4 недели = 600₽/месяц
+### Сравнение расходов:
 
-Экономия: 3400₽ в месяц или 40800₽ в год!
+**Кофе в кофейне:**
+- 200₽ × 5 дней × 4 недели = **4000₽/месяц**
 
-Купите хороший термос за 2000₽ и варите кофе дома. Качество будет не хуже, а через месяц термос окупится.`,
+**Кофе дома в термосе:**
+- 30₽ × 5 дней × 4 недели = **600₽/месяц**
+
+### Результат:
+- Экономия: \`3400₽ в месяц\` или \`40800₽ в год!\`
+- Инвестиция: хороший термос ~2000₽
+- Окупаемость: **меньше месяца**
+
+> Купите хороший термос и варите кофе дома. Качество будет не хуже, вкус даже лучше (вы же знаете, что любите), а экономия существенная!
+
+### Дополнительные плюсы:
+- Контроль качества кофе
+- Экономия времени (не нужно стоять в очереди)
+- Экологичность (меньше одноразовых стаканчиков)`,
       category: 'финансы',
       authorId: user2.id,
     },
@@ -214,6 +235,31 @@ async function main() {
   })
 
   console.log('Comments created')
+
+  // Create favorites
+  await prisma.favorite.create({
+    data: { userId: user1.id, lifehackId: lifehack2.id },
+  })
+  await prisma.favorite.create({
+    data: { userId: user1.id, lifehackId: lifehack4.id },
+  })
+  await prisma.favorite.create({
+    data: { userId: user2.id, lifehackId: lifehack1.id },
+  })
+  await prisma.favorite.create({
+    data: { userId: user2.id, lifehackId: lifehack4.id },
+  })
+  await prisma.favorite.create({
+    data: { userId: user2.id, lifehackId: lifehack6.id },
+  })
+  await prisma.favorite.create({
+    data: { userId: user3.id, lifehackId: lifehack1.id },
+  })
+  await prisma.favorite.create({
+    data: { userId: user3.id, lifehackId: lifehack2.id },
+  })
+
+  console.log('Favorites created')
   console.log('Seed completed successfully!')
 }
 

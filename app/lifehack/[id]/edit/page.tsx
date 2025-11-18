@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import MarkdownPreview from '@/components/MarkdownPreview'
 
-export default function CreateLifehackPage() {
+export default function EditLifehackPage({ params }: { params: { id: string } }) {
   const router = useRouter()
   const { data: session, status } = useSession()
   const [formData, setFormData] = useState({
@@ -16,6 +16,7 @@ export default function CreateLifehackPage() {
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [initialLoading, setInitialLoading] = useState(true)
   const [showPreview, setShowPreview] = useState(false)
 
   const categories = [
@@ -28,7 +29,43 @@ export default function CreateLifehackPage() {
     'другое',
   ]
 
-  if (status === 'loading') {
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetchLifehack()
+    }
+  }, [status, params.id])
+
+  const fetchLifehack = async () => {
+    try {
+      const response = await fetch(`/api/lifehacks/${params.id}`)
+      if (!response.ok) {
+        throw new Error('Lifehack not found')
+      }
+      const data = await response.json()
+
+      // Check if user is the author
+      if (session?.user?.id !== data.author.id) {
+        setError('У вас нет прав для редактирования этого лайфхака')
+        setTimeout(() => router.push(`/lifehack/${params.id}`), 2000)
+        return
+      }
+
+      setFormData({
+        title: data.title,
+        description: data.description,
+        content: data.content,
+        category: data.category,
+      })
+    } catch (error) {
+      console.error('Error fetching lifehack:', error)
+      setError('Не удалось загрузить лайфхак')
+      setTimeout(() => router.push('/'), 2000)
+    } finally {
+      setInitialLoading(false)
+    }
+  }
+
+  if (status === 'loading' || initialLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -47,8 +84,8 @@ export default function CreateLifehackPage() {
     setLoading(true)
 
     try {
-      const response = await fetch('/api/lifehacks', {
-        method: 'POST',
+      const response = await fetch(`/api/lifehacks/${params.id}/edit`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -56,13 +93,13 @@ export default function CreateLifehackPage() {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to create lifehack')
+        const data = await response.json()
+        throw new Error(data.error || 'Failed to update lifehack')
       }
 
-      const lifehack = await response.json()
-      router.push(`/lifehack/${lifehack.id}`)
-    } catch (error) {
-      setError('Произошла ошибка при создании лайфхака')
+      router.push(`/lifehack/${params.id}`)
+    } catch (error: any) {
+      setError(error.message || 'Произошла ошибка при обновлении лайфхака')
     } finally {
       setLoading(false)
     }
@@ -81,7 +118,7 @@ export default function CreateLifehackPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
         <h1 className="text-3xl font-bold mb-6 text-gray-900">
-          Создать новый лайфхак
+          Редактировать лайфхак
         </h1>
 
         {error && (
@@ -200,11 +237,11 @@ export default function CreateLifehackPage() {
               disabled={loading}
               className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Создание...' : 'Опубликовать лайфхак'}
+              {loading ? 'Сохранение...' : 'Сохранить изменения'}
             </button>
             <button
               type="button"
-              onClick={() => router.back()}
+              onClick={() => router.push(`/lifehack/${params.id}`)}
               className="px-6 py-2 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition"
             >
               Отмена
