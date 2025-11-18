@@ -28,6 +28,7 @@ interface Lifehack {
   averageRating: number
   ratingsCount: number
   commentsCount: number
+  isFavorited?: boolean
   ratings: Array<{
     id: string
     value: number
@@ -175,7 +176,11 @@ export default function LifehackPage({ params }: { params: { id: string } }) {
               {lifehack.title}
             </h1>
             <div className="flex items-center gap-2">
-              <FavoriteButton lifehackId={lifehack.id} size="lg" />
+              <FavoriteButton
+                lifehackId={lifehack.id}
+                initialFavorited={lifehack.isFavorited}
+                size="lg"
+              />
               {session?.user?.id === lifehack.author.id && (
                 <div className="flex gap-2">
                   <button
@@ -225,10 +230,9 @@ export default function LifehackPage({ params }: { params: { id: string } }) {
 
           <p className="text-lg text-gray-700 mb-6">{lifehack.description}</p>
 
-          <div className="prose prose-blue max-w-none mb-8">
+          <div className="prose prose-blue max-w-none mb-8 text-gray-800">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
-              className="text-gray-800"
               components={{
                 h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mt-6 mb-4" {...props} />,
                 h2: ({ node, ...props }) => <h2 className="text-2xl font-bold mt-5 mb-3" {...props} />,

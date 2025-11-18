@@ -19,6 +19,7 @@ interface LifehackCardProps {
     averageRating?: number
     ratingsCount?: number
     commentsCount?: number
+    isFavorited?: boolean
   }
   showFavorite?: boolean
 }
@@ -72,7 +73,11 @@ export default function LifehackCard({ lifehack, showFavorite = true }: Lifehack
 
       {showFavorite && (
         <div className="absolute top-2 right-2 z-10">
-          <FavoriteButton lifehackId={lifehack.id} size="sm" />
+          <FavoriteButton
+            lifehackId={lifehack.id}
+            initialFavorited={lifehack.isFavorited}
+            size="sm"
+          />
         </div>
       )}
     </div>

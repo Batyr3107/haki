@@ -191,7 +191,7 @@ export default function Home() {
           Найдено лайфхаков: <span className="font-semibold">{filteredAndSortedLifehacks.length}</span>
           {searchQuery && (
             <span className="ml-2">
-              (по запросу "{searchQuery}")
+              (по запросу &ldquo;{searchQuery}&rdquo;)
             </span>
           )}
         </div>

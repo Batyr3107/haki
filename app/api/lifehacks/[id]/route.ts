@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server"
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 
 export async function GET(
@@ -6,6 +8,8 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    const session = await getServerSession(authOptions)
+
     const lifehack = await prisma.lifehack.findUnique({
       where: {
         id: params.id
@@ -44,7 +48,12 @@ export async function GET(
           orderBy: {
             createdAt: 'desc'
           }
-        }
+        },
+        favorites: session?.user?.id ? {
+          where: {
+            userId: session.user.id
+          }
+        } : false
       }
     })
 
@@ -52,15 +61,17 @@ export async function GET(
       return new NextResponse("Not found", { status: 404 })
     }
 
-    // Calculate average rating
+    // Calculate average rating and favorite status
     const totalRating = lifehack.ratings.reduce((sum: number, rating: { value: number }) => sum + rating.value, 0)
     const averageRating = lifehack.ratings.length > 0 ? totalRating / lifehack.ratings.length : 0
+    const isFavorited = session?.user?.id ? (lifehack as any).favorites.length > 0 : false
 
     return NextResponse.json({
       ...lifehack,
       averageRating,
       ratingsCount: lifehack.ratings.length,
       commentsCount: lifehack.comments.length,
+      isFavorited,
     })
   } catch (error) {
     console.log(error, 'LIFEHACK_GET')

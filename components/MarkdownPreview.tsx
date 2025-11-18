@@ -9,10 +9,9 @@ interface MarkdownPreviewProps {
 
 export default function MarkdownPreview({ content }: MarkdownPreviewProps) {
   return (
-    <div className="prose prose-blue max-w-none">
+    <div className="prose prose-blue max-w-none text-gray-800">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        className="text-gray-800"
         components={{
           h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mt-6 mb-4" {...props} />,
           h2: ({ node, ...props }) => <h2 className="text-2xl font-bold mt-5 mb-3" {...props} />,
