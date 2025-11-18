@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  name      String?
+  bio       String?
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  lifehacks Lifehack[]
+  ratings   Rating[]
+  comments  Comment[]
+}
+
+model Lifehack {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  content     String
+  category    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  ratings     Rating[]
+  comments    Comment[]
+}
+
+model Rating {
+  id          String   @id @default(cuid())
+  value       Int      // 1-5 stars or just 1 for like
+  createdAt   DateTime @default(now())
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  lifehackId  String
+  lifehack    Lifehack @relation(fields: [lifehackId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lifehackId])
+}
+
+model Comment {
+  id          String   @id @default(cuid())
+  content     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  lifehackId  String
+  lifehack    Lifehack @relation(fields: [lifehackId], references: [id], onDelete: Cascade)
+}
