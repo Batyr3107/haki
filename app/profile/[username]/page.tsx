@@ -4,7 +4,11 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { formatDistanceToNow } from 'date-fns'
 import { ru } from 'date-fns/locale'
+import { useSession } from 'next-auth/react'
+import Link from 'next/link'
 import LifehackCard from '@/components/LifehackCard'
+import FollowButton from '@/components/FollowButton'
+import Breadcrumbs from '@/components/Breadcrumbs'
 
 interface UserProfile {
   user: {
@@ -19,6 +23,8 @@ interface UserProfile {
     totalRatingsGiven: number
     totalRatingsReceived: number
     averageRatingReceived: number
+    followersCount: number
+    followingCount: number
   }
   lifehacks: Array<{
     id: string
@@ -73,11 +79,16 @@ export default function ProfilePage({ params }: { params: { username: string } }
     return null
   }
 
+  const { data: session } = useSession()
+
   return (
     <div className="container mx-auto px-4 py-8">
+      <Breadcrumbs items={[{ label: profile.user.name || profile.user.username, href: `/profile/${profile.user.username}` }]} />
+
       {/* Profile header */}
       <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-        <div className="flex items-start gap-6">
+        <div className="flex items-start justify-between gap-6">
+          <div className="flex items-start gap-6 flex-1">
           <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-4xl font-bold">
             {profile.user.name?.[0]?.toUpperCase() || profile.user.username[0].toUpperCase()}
           </div>
@@ -98,10 +109,28 @@ export default function ProfilePage({ params }: { params: { username: string } }
               })}
             </p>
           </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            {session?.user?.username === profile.user.username ? (
+              <Link
+                href="/settings"
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition font-semibold text-center"
+              >
+                Редактировать профиль
+              </Link>
+            ) : (
+              <FollowButton
+                userId={profile.user.id}
+                showCount={true}
+                followersCount={profile.stats.followersCount}
+              />
+            )}
+          </div>
         </div>
 
         {/* Statistics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 pt-8 border-t">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mt-8 pt-8 border-t">
           <div className="text-center">
             <div className="text-3xl font-bold text-blue-600">
               {profile.stats.totalLifehacks}
@@ -128,6 +157,20 @@ export default function ProfilePage({ params }: { params: { username: string } }
               {profile.stats.totalRatingsGiven}
             </div>
             <div className="text-sm text-gray-600">Оценок поставлено</div>
+          </div>
+
+          <div className="text-center">
+            <div className="text-3xl font-bold text-pink-600">
+              {profile.stats.followersCount}
+            </div>
+            <div className="text-sm text-gray-600">Подписчиков</div>
+          </div>
+
+          <div className="text-center">
+            <div className="text-3xl font-bold text-indigo-600">
+              {profile.stats.followingCount}
+            </div>
+            <div className="text-sm text-gray-600">Подписок</div>
           </div>
         </div>
       </div>

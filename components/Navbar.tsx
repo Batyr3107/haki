@@ -18,6 +18,9 @@ export default function Navbar() {
             <Link href="/" className="hover:text-blue-200 transition">
               Все лайфхаки
             </Link>
+            <Link href="/top" className="hover:text-blue-200 transition">
+              🏆 Топ
+            </Link>
 
             {session ? (
               <>

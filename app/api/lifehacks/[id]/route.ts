@@ -59,7 +59,12 @@ export async function GET(
           where: {
             userId: session.user.id
           }
-        } : false
+        } : false,
+        tags: {
+          include: {
+            tag: true
+          }
+        }
       }
     })
 

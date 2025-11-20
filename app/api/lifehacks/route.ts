@@ -52,7 +52,12 @@ export async function GET(request: Request) {
           where: {
             userId: session.user.id
           }
-        } : false
+        } : false,
+        tags: {
+          include: {
+            tag: true
+          }
+        }
       },
       orderBy: {
         createdAt: 'desc'
@@ -91,7 +96,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { title, description, content, category } = body
+    const { title, description, content, category, tags = [] } = body
 
     if (!title || !description || !content || !category) {
       return new NextResponse("Missing fields", { status: 400 })
@@ -116,6 +121,29 @@ export async function POST(request: Request) {
         }
       }
     })
+
+    // Create and link tags
+    if (tags && tags.length > 0) {
+      for (const tagName of tags) {
+        const slug = tagName
+          .toLowerCase()
+          .replace(/[^a-zа-я0-9]+/g, '-')
+          .replace(/^-|-$/g, '')
+
+        const tag = await prisma.tag.upsert({
+          where: { slug },
+          update: {},
+          create: { name: tagName, slug }
+        })
+
+        await prisma.lifehackTag.create({
+          data: {
+            lifehackId: lifehack.id,
+            tagId: tag.id
+          }
+        })
+      }
+    }
 
     return NextResponse.json(lifehack)
   } catch (error) {

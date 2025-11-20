@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import MarkdownPreview from '@/components/MarkdownPreview'
+import TagInput from '@/components/TagInput'
 
 export default function CreateLifehackPage() {
   const router = useRouter()
@@ -14,6 +15,7 @@ export default function CreateLifehackPage() {
     content: '',
     category: 'технологии',
   })
+  const [tags, setTags] = useState<string[]>([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
@@ -52,7 +54,7 @@ export default function CreateLifehackPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, tags }),
       })
 
       if (!response.ok) {
@@ -193,6 +195,8 @@ export default function CreateLifehackPage() {
               ))}
             </select>
           </div>
+
+          <TagInput tags={tags} onChange={setTags} />
 
           <div className="flex gap-4">
             <button

@@ -11,6 +11,8 @@ import remarkGfm from 'remark-gfm'
 import RatingStars from '@/components/RatingStars'
 import ShareButtons from '@/components/ShareButtons'
 import FavoriteButton from '@/components/FavoriteButton'
+import RelatedLifehacks from '@/components/RelatedLifehacks'
+import Breadcrumbs from '@/components/Breadcrumbs'
 
 interface Lifehack {
   id: string
@@ -162,6 +164,8 @@ export default function LifehackPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Breadcrumbs items={[{ label: lifehack.title, href: `/lifehack/${lifehack.id}` }]} />
+
       <div className="max-w-4xl mx-auto">
         {/* Lifehack content */}
         <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
@@ -377,6 +381,14 @@ export default function LifehackPage({ params }: { params: { id: string } }) {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Related lifehacks */}
+      <div className="mt-12">
+        <RelatedLifehacks
+          category={lifehack.category}
+          currentLifehackId={lifehack.id}
+        />
       </div>
     </div>
   )

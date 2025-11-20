@@ -20,6 +20,7 @@ interface LifehackCardProps {
     ratingsCount?: number
     commentsCount?: number
     isFavorited?: boolean
+    tags?: Array<{ tag: { name: string; slug: string } }>
   }
   showFavorite?: boolean
 }
@@ -49,7 +50,25 @@ export default function LifehackCard({ lifehack, showFavorite = true }: Lifehack
             </span>
           </div>
 
-          <p className="text-gray-600 mb-4 line-clamp-2">{lifehack.description}</p>
+          <p className="text-gray-600 mb-3 line-clamp-2">{lifehack.description}</p>
+
+          {lifehack.tags && lifehack.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-3">
+              {lifehack.tags.slice(0, 3).map((tagRelation) => (
+                <span
+                  key={tagRelation.tag.slug}
+                  className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded"
+                >
+                  #{tagRelation.tag.name}
+                </span>
+              ))}
+              {lifehack.tags.length > 3 && (
+                <span className="text-xs px-2 py-1 text-gray-500">
+                  +{lifehack.tags.length - 3}
+                </span>
+              )}
+            </div>
+          )}
 
           <div className="flex items-center justify-between text-sm text-gray-500">
             <div className="flex items-center gap-4">

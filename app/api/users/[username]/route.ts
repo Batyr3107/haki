@@ -33,6 +33,12 @@ export async function GET(
           }
         },
         ratings: true,
+        _count: {
+          select: {
+            followers: true,
+            following: true
+          }
+        }
       }
     })
 

@@ -260,6 +260,104 @@ async function main() {
   })
 
   console.log('Favorites created')
+
+  // Create tags
+  const tag1 = await prisma.tag.create({
+    data: { name: 'технологии', slug: 'tehnologii' },
+  })
+  const tag2 = await prisma.tag.create({
+    data: { name: 'лайфхак', slug: 'laifhak' },
+  })
+  const tag3 = await prisma.tag.create({
+    data: { name: 'кухня', slug: 'kuhnya' },
+  })
+  const tag4 = await prisma.tag.create({
+    data: { name: 'автомобиль', slug: 'avtomobil' },
+  })
+  const tag5 = await prisma.tag.create({
+    data: { name: 'экономия', slug: 'ekonomiya' },
+  })
+  const tag6 = await prisma.tag.create({
+    data: { name: 'здоровье', slug: 'zdorove' },
+  })
+  const tag7 = await prisma.tag.create({
+    data: { name: 'DIY', slug: 'diy' },
+  })
+  const tag8 = await prisma.tag.create({
+    data: { name: 'быстро', slug: 'bystro' },
+  })
+
+  console.log('Tags created')
+
+  // Link tags to lifehacks
+  await prisma.lifehackTag.create({
+    data: { lifehackId: lifehack1.id, tagId: tag1.id },
+  })
+  await prisma.lifehackTag.create({
+    data: { lifehackId: lifehack1.id, tagId: tag2.id },
+  })
+  await prisma.lifehackTag.create({
+    data: { lifehackId: lifehack1.id, tagId: tag8.id },
+  })
+
+  await prisma.lifehackTag.create({
+    data: { lifehackId: lifehack2.id, tagId: tag3.id },
+  })
+  await prisma.lifehackTag.create({
+    data: { lifehackId: lifehack2.id, tagId: tag2.id },
+  })
+
+  await prisma.lifehackTag.create({
+    data: { lifehackId: lifehack3.id, tagId: tag7.id },
+  })
+  await prisma.lifehackTag.create({
+    data: { lifehackId: lifehack3.id, tagId: tag2.id },
+  })
+
+  await prisma.lifehackTag.create({
+    data: { lifehackId: lifehack4.id, tagId: tag4.id },
+  })
+  await prisma.lifehackTag.create({
+    data: { lifehackId: lifehack4.id, tagId: tag7.id },
+  })
+  await prisma.lifehackTag.create({
+    data: { lifehackId: lifehack4.id, tagId: tag8.id },
+  })
+
+  await prisma.lifehackTag.create({
+    data: { lifehackId: lifehack5.id, tagId: tag5.id },
+  })
+  await prisma.lifehackTag.create({
+    data: { lifehackId: lifehack5.id, tagId: tag2.id },
+  })
+
+  await prisma.lifehackTag.create({
+    data: { lifehackId: lifehack6.id, tagId: tag6.id },
+  })
+  await prisma.lifehackTag.create({
+    data: { lifehackId: lifehack6.id, tagId: tag2.id },
+  })
+
+  console.log('Lifehack tags linked')
+
+  // Create follow relationships
+  await prisma.follow.create({
+    data: { followerId: user1.id, followingId: user2.id },
+  })
+  await prisma.follow.create({
+    data: { followerId: user1.id, followingId: user3.id },
+  })
+  await prisma.follow.create({
+    data: { followerId: user2.id, followingId: user1.id },
+  })
+  await prisma.follow.create({
+    data: { followerId: user2.id, followingId: user3.id },
+  })
+  await prisma.follow.create({
+    data: { followerId: user3.id, followingId: user1.id },
+  })
+
+  console.log('Follow relationships created')
   console.log('Seed completed successfully!')
 }
 
