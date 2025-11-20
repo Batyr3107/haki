@@ -21,10 +21,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  lifehacks Lifehack[]
-  ratings   Rating[]
-  comments  Comment[]
-  favorites Favorite[]
+  lifehacks    Lifehack[]
+  ratings      Rating[]
+  comments     Comment[]
+  favorites    Favorite[]
+  following    Follow[]   @relation("UserFollowing")
+  followers    Follow[]   @relation("UserFollowers")
 }
 
 model Lifehack {
@@ -43,6 +45,7 @@ model Lifehack {
   ratings     Rating[]
   comments    Comment[]
   favorites   Favorite[]
+  tags        LifehackTag[]
 }
 
 model Rating {
@@ -83,4 +86,39 @@ model Favorite {
   lifehack    Lifehack @relation(fields: [lifehackId], references: [id], onDelete: Cascade)
 
   @@unique([userId, lifehackId])
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+
+  lifehacks LifehackTag[]
+}
+
+model LifehackTag {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+
+  lifehackId  String
+  lifehack    Lifehack @relation(fields: [lifehackId], references: [id], onDelete: Cascade)
+
+  tagId       String
+  tag         Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([lifehackId, tagId])
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+
+  followerId  String
+  follower    User     @relation("UserFollowing", fields: [followerId], references: [id], onDelete: Cascade)
+
+  followingId String
+  following   User     @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
 }

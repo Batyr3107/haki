@@ -10,6 +10,12 @@ export async function GET(
   try {
     const session = await getServerSession(authOptions)
 
+    // Increment views count
+    await prisma.lifehack.update({
+      where: { id: params.id },
+      data: { views: { increment: 1 } },
+    })
+
     const lifehack = await prisma.lifehack.findUnique({
       where: {
         id: params.id
