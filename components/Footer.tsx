@@ -39,6 +39,11 @@ export default function Footer() {
                   Топ лайфхаков
                 </Link>
               </li>
+              <li>
+                <Link href="/tags" className="hover:text-white transition">
+                  Поиск по тегам
+                </Link>
+              </li>
             </ul>
           </div>
 

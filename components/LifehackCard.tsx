@@ -19,6 +19,7 @@ interface LifehackCardProps {
     averageRating?: number
     ratingsCount?: number
     commentsCount?: number
+    views?: number
     isFavorited?: boolean
     tags?: Array<{ tag: { name: string; slug: string } }>
   }
@@ -53,14 +54,16 @@ export default function LifehackCard({ lifehack, showFavorite = true }: Lifehack
           <p className="text-gray-600 mb-3 line-clamp-2">{lifehack.description}</p>
 
           {lifehack.tags && lifehack.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-3">
+            <div className="flex flex-wrap gap-1 mb-3" onClick={(e) => e.stopPropagation()}>
               {lifehack.tags.slice(0, 3).map((tagRelation) => (
-                <span
+                <Link
                   key={tagRelation.tag.slug}
-                  className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded"
+                  href={`/tags?tag=${tagRelation.tag.slug}`}
+                  className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded hover:bg-blue-100 hover:text-blue-700 transition"
+                  onClick={(e) => e.stopPropagation()}
                 >
                   #{tagRelation.tag.name}
-                </span>
+                </Link>
               ))}
               {lifehack.tags.length > 3 && (
                 <span className="text-xs px-2 py-1 text-gray-500">
@@ -84,6 +87,9 @@ export default function LifehackCard({ lifehack, showFavorite = true }: Lifehack
               )}
               {lifehack.commentsCount !== undefined && (
                 <span>💬 {lifehack.commentsCount}</span>
+              )}
+              {lifehack.views !== undefined && (
+                <span>👁️ {lifehack.views}</span>
               )}
             </div>
           </div>

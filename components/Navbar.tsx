@@ -21,6 +21,9 @@ export default function Navbar() {
             <Link href="/top" className="hover:text-blue-200 transition">
               🏆 Топ
             </Link>
+            <Link href="/tags" className="hover:text-blue-200 transition">
+              🏷️ Теги
+            </Link>
 
             {session ? (
               <>

@@ -1,9 +1,12 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
+import { useSession } from 'next-auth/react'
+import Link from 'next/link'
 import LifehackCard from '@/components/LifehackCard'
 import ErrorMessage from '@/components/ErrorMessage'
 import { SkeletonGrid } from '@/components/SkeletonCard'
+import PlatformStats from '@/components/PlatformStats'
 import { useDebounce } from '@/lib/hooks'
 
 interface Lifehack {
@@ -19,6 +22,9 @@ interface Lifehack {
   averageRating: number
   ratingsCount: number
   commentsCount: number
+  views?: number
+  tags?: Array<{ tag: { name: string; slug: string } }>
+  isFavorited?: boolean
 }
 
 type SortOption = 'newest' | 'top-rated' | 'most-commented'
@@ -26,6 +32,7 @@ type SortOption = 'newest' | 'top-rated' | 'most-commented'
 const ITEMS_PER_PAGE = 9
 
 export default function Home() {
+  const { data: session } = useSession()
   const [lifehacks, setLifehacks] = useState<Lifehack[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -130,6 +137,35 @@ export default function Home() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Welcome Banner for non-authenticated users */}
+      {!session && (
+        <div className="mb-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-lg p-8 text-white">
+          <div className="max-w-3xl">
+            <h2 className="text-3xl font-bold mb-3">
+              Добро пожаловать в LifeHacks! 🚀
+            </h2>
+            <p className="text-lg mb-4 text-blue-50">
+              Откройте для себя тысячи полезных советов от сообщества. Делитесь своим опытом,
+              находите решения повседневных задач и учитесь у других!
+            </p>
+            <div className="flex gap-4">
+              <Link
+                href="/register"
+                className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition shadow-md"
+              >
+                Зарегистрироваться бесплатно
+              </Link>
+              <Link
+                href="/login"
+                className="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-800 transition"
+              >
+                Войти
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-gray-900 mb-2">
           💡 Полезные лайфхаки для парней
@@ -272,6 +308,11 @@ export default function Home() {
           </p>
         </div>
       )}
+
+      {/* Platform Statistics */}
+      <div className="mt-12">
+        <PlatformStats />
+      </div>
     </div>
   )
 }

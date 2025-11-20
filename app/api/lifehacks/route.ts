@@ -10,6 +10,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
     const authorId = searchParams.get('authorId')
+    const tag = searchParams.get('tag')
 
     const where: any = {}
 
@@ -19,6 +20,16 @@ export async function GET(request: Request) {
 
     if (authorId) {
       where.authorId = authorId
+    }
+
+    if (tag) {
+      where.tags = {
+        some: {
+          tag: {
+            slug: tag
+          }
+        }
+      }
     }
 
     const lifehacks = await prisma.lifehack.findMany({
@@ -75,6 +86,7 @@ export async function GET(request: Request) {
         averageRating,
         ratingsCount: lifehack.ratings.length,
         commentsCount: lifehack.comments.length,
+        views: lifehack.views || 0,
         isFavorited,
       }
     })
