@@ -21,6 +21,7 @@ interface Lifehack {
   content: string
   category: string
   createdAt: string
+  views?: number
   author: {
     id: string
     username: string
@@ -31,6 +32,7 @@ interface Lifehack {
   ratingsCount: number
   commentsCount: number
   isFavorited?: boolean
+  tags?: Array<{ tag: { name: string; slug: string } }>
   ratings: Array<{
     id: string
     value: number

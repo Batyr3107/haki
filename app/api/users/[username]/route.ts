@@ -21,6 +21,11 @@ export async function GET(
           include: {
             ratings: true,
             comments: true,
+            tags: {
+              include: {
+                tag: true
+              }
+            },
             author: {
               select: {
                 username: true,
@@ -75,6 +80,7 @@ export async function GET(
         averageRating,
         ratingsCount: lifehack.ratings.length,
         commentsCount: lifehack.comments.length,
+        views: lifehack.views || 0,
       }
     })
 
@@ -92,6 +98,8 @@ export async function GET(
         totalRatingsGiven,
         totalRatingsReceived,
         averageRatingReceived,
+        followersCount: user._count.followers,
+        followingCount: user._count.following,
       },
       lifehacks: lifehacksWithStats,
     })

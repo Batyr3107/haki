@@ -19,6 +19,7 @@ interface Lifehack {
   averageRating?: number
   ratingsCount?: number
   commentsCount?: number
+  tags?: Array<{ tag: { name: string; slug: string } }>
   isFavorited?: boolean
 }
 

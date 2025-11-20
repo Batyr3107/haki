@@ -79,6 +79,11 @@ export async function GET(request: Request) {
             },
             ratings: true,
             comments: true,
+            tags: {
+              include: {
+                tag: true
+              }
+            },
           }
         }
       },
@@ -97,6 +102,8 @@ export async function GET(request: Request) {
         averageRating,
         ratingsCount: fav.lifehack.ratings.length,
         commentsCount: fav.lifehack.comments.length,
+        views: fav.lifehack.views || 0,
+        isFavorited: true,
       }
     })
 

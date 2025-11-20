@@ -39,6 +39,9 @@ interface UserProfile {
     averageRating: number
     ratingsCount: number
     commentsCount: number
+    views?: number
+    tags?: Array<{ tag: { name: string; slug: string } }>
+    isFavorited?: boolean
   }>
 }
 
