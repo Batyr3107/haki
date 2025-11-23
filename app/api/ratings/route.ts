@@ -58,7 +58,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(rating)
   } catch (error) {
-    console.log(error, 'RATING_POST')
+    console.error('[ RATING_POST]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }

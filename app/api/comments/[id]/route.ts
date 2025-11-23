@@ -35,7 +35,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: "Deleted successfully" })
   } catch (error) {
-    console.log(error, 'COMMENT_DELETE')
+    console.error('[ COMMENT_DELETE]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }

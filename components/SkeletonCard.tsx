@@ -1,4 +1,6 @@
-export default function SkeletonCard() {
+import { memo } from 'react'
+
+function SkeletonCard() {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 animate-pulse">
       {/* Category badge */}
@@ -31,11 +33,14 @@ export default function SkeletonCard() {
   )
 }
 
+const MemoizedSkeletonCard = memo(SkeletonCard)
+export default MemoizedSkeletonCard
+
 export function SkeletonGrid({ count = 6 }: { count?: number }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {Array.from({ length: count }).map((_, i) => (
-        <SkeletonCard key={i} />
+        <MemoizedSkeletonCard key={i} />
       ))}
     </div>
   )

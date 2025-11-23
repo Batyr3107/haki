@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, memo } from 'react'
 
 interface RatingStarsProps {
   initialRating?: number
@@ -9,7 +9,7 @@ interface RatingStarsProps {
   size?: 'sm' | 'md' | 'lg'
 }
 
-export default function RatingStars({
+function RatingStars({
   initialRating = 0,
   onRate,
   readonly = false,
@@ -41,6 +41,8 @@ export default function RatingStars({
           onMouseLeave={() => !readonly && setHoverRating(0)}
           disabled={readonly}
           className={`${sizeClasses[size]} ${readonly ? 'cursor-default' : 'cursor-pointer hover:scale-110'} transition-transform`}
+          aria-label={`Оценить ${star} из 5 звезд`}
+          title={readonly ? undefined : `Оценить ${star} из 5`}
         >
           {star <= (hoverRating || rating) ? '⭐' : '☆'}
         </button>
@@ -48,3 +50,5 @@ export default function RatingStars({
     </div>
   )
 }
+
+export default memo(RatingStars)

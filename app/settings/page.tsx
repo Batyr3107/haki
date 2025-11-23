@@ -108,13 +108,13 @@ export default function SettingsPage() {
         </h1>
 
         {success && (
-          <div className="bg-green-50 text-green-600 p-3 rounded-lg mb-4">
+          <div className="bg-green-50 text-green-600 p-3 rounded-lg mb-4" role="status" aria-live="polite">
             Профиль успешно обновлен! Перенаправление...
           </div>
         )}
 
         {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4">
+          <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4" role="alert" aria-live="polite">
             {error}
           </div>
         )}

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { Prisma } from "@prisma/client"
 
 // GET all lifehacks
 export async function GET(request: Request) {
@@ -12,7 +13,7 @@ export async function GET(request: Request) {
     const authorId = searchParams.get('authorId')
     const tag = searchParams.get('tag')
 
-    const where: any = {}
+    const where: Prisma.LifehackWhereInput = {}
 
     if (category) {
       where.category = category
@@ -76,7 +77,8 @@ export async function GET(request: Request) {
     })
 
     // Calculate average rating and favorite status for each lifehack
-    const lifehacksWithRatings = lifehacks.map((lifehack: any) => {
+    type LifehackWithIncludes = typeof lifehacks[0]
+    const lifehacksWithRatings = lifehacks.map((lifehack: LifehackWithIncludes) => {
       const totalRating = lifehack.ratings.reduce((sum: number, rating: { value: number }) => sum + rating.value, 0)
       const averageRating = lifehack.ratings.length > 0 ? totalRating / lifehack.ratings.length : 0
       const isFavorited = session?.user?.id ? lifehack.favorites.length > 0 : false
@@ -93,8 +95,8 @@ export async function GET(request: Request) {
 
     return NextResponse.json(lifehacksWithRatings)
   } catch (error) {
-    console.log(error, 'LIFEHACKS_GET')
-    return new NextResponse("Internal Error", { status: 500 })
+    console.error('[LIFEHACKS_GET]', error)
+    return new NextResponse("Ошибка при загрузке лайфхаков", { status: 500 })
   }
 }
 
@@ -110,8 +112,27 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { title, description, content, category, tags = [] } = body
 
+    // Validate required fields
     if (!title || !description || !content || !category) {
-      return new NextResponse("Missing fields", { status: 400 })
+      return new NextResponse("Все поля обязательны для заполнения", { status: 400 })
+    }
+
+    // Validate field lengths
+    if (title.length < 5 || title.length > 200) {
+      return new NextResponse("Заголовок должен содержать от 5 до 200 символов", { status: 400 })
+    }
+
+    if (description.length < 10 || description.length > 500) {
+      return new NextResponse("Описание должно содержать от 10 до 500 символов", { status: 400 })
+    }
+
+    if (content.length < 20) {
+      return new NextResponse("Содержание должно содержать минимум 20 символов", { status: 400 })
+    }
+
+    // Validate tags count
+    if (tags.length > 5) {
+      return new NextResponse("Максимум 5 тегов разрешено", { status: 400 })
     }
 
     const lifehack = await prisma.lifehack.create({
@@ -159,7 +180,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(lifehack)
   } catch (error) {
-    console.log(error, 'LIFEHACK_POST')
-    return new NextResponse("Internal Error", { status: 500 })
+    console.error('[LIFEHACK_POST]', error)
+    return new NextResponse("Ошибка при создании лайфхака", { status: 500 })
   }
 }

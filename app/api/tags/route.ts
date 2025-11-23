@@ -19,7 +19,7 @@ export async function GET() {
 
     return NextResponse.json(tags)
   } catch (error) {
-    console.log(error, 'TAGS_GET')
+    console.error('[ TAGS_GET]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(tag)
   } catch (error) {
-    console.log(error, 'TAG_POST')
+    console.error('[ TAG_POST]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }

@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ favorited: true })
     }
   } catch (error) {
-    console.log(error, 'FAVORITE_POST')
+    console.error('[ FAVORITE_POST]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }
@@ -93,7 +93,8 @@ export async function GET(request: Request) {
     })
 
     // Transform to include calculated fields
-    const transformedFavorites = favorites.map((fav: any) => {
+    type FavoriteWithLifehack = typeof favorites[0]
+    const transformedFavorites = favorites.map((fav: FavoriteWithLifehack) => {
       const totalRating = fav.lifehack.ratings.reduce((sum: number, rating: { value: number }) => sum + rating.value, 0)
       const averageRating = fav.lifehack.ratings.length > 0 ? totalRating / fav.lifehack.ratings.length : 0
 
@@ -109,7 +110,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(transformedFavorites)
   } catch (error) {
-    console.log(error, 'FAVORITES_GET')
+    console.error('[ FAVORITES_GET]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }

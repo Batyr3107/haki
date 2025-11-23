@@ -122,7 +122,7 @@ export default function EditLifehackPage({ params }: { params: { id: string } })
         </h1>
 
         {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4">
+          <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4" role="alert" aria-live="polite">
             {error}
           </div>
         )}

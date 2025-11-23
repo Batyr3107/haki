@@ -34,7 +34,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json(user)
   } catch (error) {
-    console.log(error, 'PROFILE_PATCH')
+    console.error('[ PROFILE_PATCH]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }

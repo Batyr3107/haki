@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import { ru } from 'date-fns/locale'
@@ -26,7 +27,7 @@ interface LifehackCardProps {
   showFavorite?: boolean
 }
 
-export default function LifehackCard({ lifehack, showFavorite = true }: LifehackCardProps) {
+function LifehackCard({ lifehack, showFavorite = true }: LifehackCardProps) {
   const getCategoryColor = (category: string) => {
     const colors: { [key: string]: string } = {
       'технологии': 'bg-blue-100 text-blue-800',
@@ -108,3 +109,5 @@ export default function LifehackCard({ lifehack, showFavorite = true }: Lifehack
     </div>
   )
 }
+
+export default memo(LifehackCard)
