@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ following: true })
     }
   } catch (error) {
-    console.error('[ FOLLOW_POST]', error)
+    console.error('[FOLLOW_POST]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }
@@ -81,7 +81,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ following: !!follow })
   } catch (error) {
-    console.error('[ FOLLOW_GET]', error)
+    console.error('[FOLLOW_GET]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }

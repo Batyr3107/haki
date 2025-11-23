@@ -35,7 +35,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: "Deleted successfully" })
   } catch (error) {
-    console.error('[ LIFEHACK_DELETE]', error)
+    console.error('[LIFEHACK_DELETE]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }
@@ -95,7 +95,7 @@ export async function PATCH(
 
     return NextResponse.json(lifehack)
   } catch (error) {
-    console.error('[ LIFEHACK_PATCH]', error)
+    console.error('[LIFEHACK_PATCH]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }

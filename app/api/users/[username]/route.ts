@@ -105,7 +105,7 @@ export async function GET(
       lifehacks: lifehacksWithStats,
     })
   } catch (error) {
-    console.error('[ USER_GET]', error)
+    console.error('[USER_GET]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }

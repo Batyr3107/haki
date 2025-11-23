@@ -48,7 +48,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ favorited: true })
     }
   } catch (error) {
-    console.error('[ FAVORITE_POST]', error)
+    console.error('[FAVORITE_POST]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }
@@ -110,7 +110,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(transformedFavorites)
   } catch (error) {
-    console.error('[ FAVORITES_GET]', error)
+    console.error('[FAVORITES_GET]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }

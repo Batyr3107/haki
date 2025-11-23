@@ -30,7 +30,7 @@ export async function GET() {
       totalViews: totalViews._sum.views || 0
     })
   } catch (error) {
-    console.error('[ STATS_GET]', error)
+    console.error('[STATS_GET]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }

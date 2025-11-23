@@ -48,8 +48,8 @@ export default function RegisterPage() {
         router.push('/')
         router.refresh()
       }
-    } catch (error: any) {
-      setError(error.message || 'Произошла ошибка при регистрации')
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'Произошла ошибка при регистрации')
     } finally {
       setLoading(false)
     }

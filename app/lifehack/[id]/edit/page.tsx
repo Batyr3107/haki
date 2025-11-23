@@ -98,8 +98,8 @@ export default function EditLifehackPage({ params }: { params: { id: string } })
       }
 
       router.push(`/lifehack/${params.id}`)
-    } catch (error: any) {
-      setError(error.message || 'Произошла ошибка при обновлении лайфхака')
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'Произошла ошибка при обновлении лайфхака')
     } finally {
       setLoading(false)
     }

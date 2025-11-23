@@ -85,7 +85,7 @@ export async function GET(
       isFavorited,
     })
   } catch (error) {
-    console.error('[ LIFEHACK_GET]', error)
+    console.error('[LIFEHACK_GET]', error)
     return new NextResponse("Internal Error", { status: 500 })
   }
 }

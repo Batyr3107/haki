@@ -77,7 +77,7 @@ export default function LifehackPage({ params }: { params: { id: string } }) {
 
       // Find user's rating
       if (session?.user?.id) {
-        const rating = data.ratings.find((r: any) => r.user.id === session.user.id)
+        const rating = data.ratings.find((r: { user: { id: string } }) => r.user.id === session.user.id)
         if (rating) {
           setUserRating(rating.value)
         }
