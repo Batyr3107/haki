@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect } from 'react'
-import * as Sentry from '@sentry/nextjs'
 
 export default function GlobalError({
   error,
@@ -11,7 +10,18 @@ export default function GlobalError({
   reset: () => void
 }) {
   useEffect(() => {
-    Sentry.captureException(error)
+    console.error('Global Error:', error)
+
+    // Report error to Sentry only if configured (dynamic import to reduce bundle)
+    if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
+      import('@sentry/nextjs')
+        .then((Sentry) => {
+          Sentry.captureException(error)
+        })
+        .catch((err) => {
+          console.error('Failed to load Sentry:', err)
+        })
+    }
   }, [error])
 
   return (

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import FavoriteButton from './FavoriteButton'
+import Avatar from './Avatar'
 
 interface LifehackCardProps {
   lifehack: {
@@ -75,9 +76,16 @@ function LifehackCard({ lifehack, showFavorite = true }: LifehackCardProps) {
           )}
 
           <div className="flex items-center justify-between text-sm text-gray-500">
-            <div className="flex items-center gap-4">
-              <span className="font-medium">👤 {lifehack.author.name || lifehack.author.username}</span>
-              <span>{formatDistanceToNow(new Date(lifehack.createdAt), { addSuffix: true, locale: ru })}</span>
+            <div className="flex items-center gap-2">
+              <Avatar
+                name={lifehack.author.name || lifehack.author.username}
+                alt={`${lifehack.author.name || lifehack.author.username}'s avatar`}
+                size="sm"
+              />
+              <div className="flex flex-col">
+                <span className="font-medium text-gray-700">{lifehack.author.name || lifehack.author.username}</span>
+                <span className="text-xs">{formatDistanceToNow(new Date(lifehack.createdAt), { addSuffix: true, locale: ru })}</span>
+              </div>
             </div>
 
             <div className="flex items-center gap-3">

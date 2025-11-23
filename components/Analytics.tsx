@@ -19,11 +19,16 @@ export function GoogleAnalytics() {
 
     const url = pathname + (searchParams?.toString() ? `?${searchParams.toString()}` : '')
 
-    // Send pageview with custom URL
-    if (window.gtag) {
-      window.gtag('config', GA_MEASUREMENT_ID, {
-        page_path: url,
-      })
+    // Send pageview with custom URL (safe error handling for ad blockers)
+    try {
+      if (window.gtag) {
+        window.gtag('config', GA_MEASUREMENT_ID, {
+          page_path: url,
+        })
+      }
+    } catch (error) {
+      // Silently fail if analytics is blocked
+      console.debug('Analytics tracking failed:', error)
     }
   }, [pathname, searchParams])
 
@@ -46,7 +51,7 @@ export function GoogleAnalytics() {
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', '${GA_MEASUREMENT_ID}', {
-              page_path: window.location.pathname,
+              send_page_view: false
             });
           `,
         }}
