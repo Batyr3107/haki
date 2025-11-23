@@ -13,16 +13,12 @@ export default function Error({
   useEffect(() => {
     console.error('Error:', error)
 
-    // Report error to Sentry only if configured (dynamic import to reduce bundle)
-    if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
-      import('@sentry/nextjs')
-        .then((Sentry) => {
-          Sentry.captureException(error)
-        })
-        .catch((err) => {
-          console.error('Failed to load Sentry:', err)
-        })
-    }
+    // Report error to Sentry using dynamic import helper
+    import('../lib/sentry')
+      .then(({ captureException }) => captureException(error))
+      .catch((err) => {
+        console.error('Failed to capture exception:', err)
+      })
   }, [error])
 
   return (

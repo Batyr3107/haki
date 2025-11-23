@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import Analytics from "@/components/Analytics";
+import SentryInit from "./sentry-init";
 // import DatadogRUM from "@/components/DatadogRUM"; // Uncomment after installing @datadog/browser-rum
 
 export const metadata: Metadata = {
@@ -66,6 +67,7 @@ export default function RootLayout({
           <Footer />
           <ScrollToTop />
         </Providers>
+        <SentryInit />
         <Analytics />
         {/* <DatadogRUM /> */} {/* Uncomment after installing @datadog/browser-rum */}
       </body>
