@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma"
 // DELETE comment
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -14,6 +14,8 @@ export async function DELETE(
     if (!session?.user?.id) {
       return new NextResponse("Unauthorized", { status: 401 })
     }
+
+    const params = await context.params
 
     // Check if comment exists and user is the author
     const comment = await prisma.comment.findUnique({

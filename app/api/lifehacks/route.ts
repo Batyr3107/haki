@@ -2,7 +2,6 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { Prisma } from "@prisma/client"
 
 // GET all lifehacks
 export async function GET(request: Request) {
@@ -13,7 +12,7 @@ export async function GET(request: Request) {
     const authorId = searchParams.get('authorId')
     const tag = searchParams.get('tag')
 
-    const where: Prisma.LifehackWhereInput = {}
+    const where: Record<string, unknown> = {}
 
     if (category) {
       where.category = category

@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma"
 // DELETE lifehack
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -14,6 +14,8 @@ export async function DELETE(
     if (!session?.user?.id) {
       return new NextResponse("Unauthorized", { status: 401 })
     }
+
+    const params = await context.params
 
     // Check if lifehack exists and user is the author
     const lifehack = await prisma.lifehack.findUnique({
@@ -43,7 +45,7 @@ export async function DELETE(
 // PATCH lifehack (update)
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
@@ -52,6 +54,7 @@ export async function PATCH(
       return new NextResponse("Unauthorized", { status: 401 })
     }
 
+    const params = await context.params
     const body = await request.json()
     const { title, description, content, category } = body
 

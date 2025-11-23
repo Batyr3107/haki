@@ -5,10 +5,11 @@ import { prisma } from "@/lib/prisma"
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions)
+    const params = await context.params
 
     // Increment views count
     await prisma.lifehack.update({
@@ -75,7 +76,8 @@ export async function GET(
     // Calculate average rating and favorite status
     const totalRating = lifehack.ratings.reduce((sum: number, rating: { value: number }) => sum + rating.value, 0)
     const averageRating = lifehack.ratings.length > 0 ? totalRating / lifehack.ratings.length : 0
-    const isFavorited = session?.user?.id ? (lifehack as any).favorites.length > 0 : false
+    const favorites = lifehack.favorites as unknown as Array<{ userId: string }>
+    const isFavorited = session?.user?.id ? favorites.length > 0 : false
 
     return NextResponse.json({
       ...lifehack,
