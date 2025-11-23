@@ -2,6 +2,11 @@ import { NextResponse } from "next/server"
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { ApiError, ApiSuccess, logApiError } from "@/lib/api-helpers"
+import { LIMITS, ERROR_MESSAGES } from "@/lib/constants"
+
+// Enable caching for this route
+export const revalidate = 60 // Cache for 60 seconds
 
 // GET all lifehacks
 export async function GET(request: Request) {
@@ -92,10 +97,10 @@ export async function GET(request: Request) {
       }
     })
 
-    return NextResponse.json(lifehacksWithRatings)
+    return ApiSuccess.ok(lifehacksWithRatings)
   } catch (error) {
-    console.error('[LIFEHACKS_GET]', error)
-    return new NextResponse("Ошибка при загрузке лайфхаков", { status: 500 })
+    logApiError('LIFEHACKS_GET', error)
+    return ApiError.internal('загрузке лайфхаков')
   }
 }
 
@@ -105,7 +110,7 @@ export async function POST(request: Request) {
     const session = await getServerSession(authOptions)
 
     if (!session?.user?.id) {
-      return new NextResponse("Unauthorized", { status: 401 })
+      return ApiError.unauthorized()
     }
 
     const body = await request.json()
@@ -113,25 +118,25 @@ export async function POST(request: Request) {
 
     // Validate required fields
     if (!title || !description || !content || !category) {
-      return new NextResponse("Все поля обязательны для заполнения", { status: 400 })
+      return ApiError.badRequest(ERROR_MESSAGES.MISSING_FIELDS)
     }
 
     // Validate field lengths
-    if (title.length < 5 || title.length > 200) {
-      return new NextResponse("Заголовок должен содержать от 5 до 200 символов", { status: 400 })
+    if (title.length < LIMITS.TITLE_MIN_LENGTH || title.length > LIMITS.TITLE_MAX_LENGTH) {
+      return ApiError.badRequest(ERROR_MESSAGES.TITLE_INVALID)
     }
 
-    if (description.length < 10 || description.length > 500) {
-      return new NextResponse("Описание должно содержать от 10 до 500 символов", { status: 400 })
+    if (description.length < LIMITS.DESCRIPTION_MIN_LENGTH || description.length > LIMITS.DESCRIPTION_MAX_LENGTH) {
+      return ApiError.badRequest(ERROR_MESSAGES.DESCRIPTION_INVALID)
     }
 
-    if (content.length < 20) {
-      return new NextResponse("Содержание должно содержать минимум 20 символов", { status: 400 })
+    if (content.length < LIMITS.CONTENT_MIN_LENGTH) {
+      return ApiError.badRequest(ERROR_MESSAGES.CONTENT_TOO_SHORT)
     }
 
     // Validate tags count
-    if (tags.length > 5) {
-      return new NextResponse("Максимум 5 тегов разрешено", { status: 400 })
+    if (tags.length > LIMITS.MAX_TAGS) {
+      return ApiError.badRequest(ERROR_MESSAGES.TOO_MANY_TAGS)
     }
 
     const lifehack = await prisma.lifehack.create({
@@ -177,9 +182,9 @@ export async function POST(request: Request) {
       }
     }
 
-    return NextResponse.json(lifehack)
+    return ApiSuccess.created(lifehack)
   } catch (error) {
-    console.error('[LIFEHACK_POST]', error)
-    return new NextResponse("Ошибка при создании лайфхака", { status: 500 })
+    logApiError('LIFEHACK_POST', error)
+    return ApiError.internal('создании лайфхака')
   }
 }

@@ -27,6 +27,10 @@ model User {
   favorites    Favorite[]
   following    Follow[]   @relation("UserFollowing")
   followers    Follow[]   @relation("UserFollowers")
+
+  @@index([email])
+  @@index([username])
+  @@index([createdAt])
 }
 
 model Lifehack {
@@ -46,6 +50,12 @@ model Lifehack {
   comments    Comment[]
   favorites   Favorite[]
   tags        LifehackTag[]
+
+  @@index([category])
+  @@index([authorId])
+  @@index([createdAt(sort: Desc)])
+  @@index([views(sort: Desc)])
+  @@index([updatedAt])
 }
 
 model Rating {
@@ -60,6 +70,8 @@ model Rating {
   lifehack    Lifehack @relation(fields: [lifehackId], references: [id], onDelete: Cascade)
 
   @@unique([userId, lifehackId])
+  @@index([lifehackId])
+  @@index([userId])
 }
 
 model Comment {
@@ -73,6 +85,10 @@ model Comment {
 
   lifehackId  String
   lifehack    Lifehack @relation(fields: [lifehackId], references: [id], onDelete: Cascade)
+
+  @@index([lifehackId])
+  @@index([userId])
+  @@index([createdAt(sort: Desc)])
 }
 
 model Favorite {
@@ -95,6 +111,9 @@ model Tag {
   createdAt DateTime @default(now())
 
   lifehacks LifehackTag[]
+
+  @@index([slug])
+  @@index([name])
 }
 
 model LifehackTag {
@@ -108,6 +127,8 @@ model LifehackTag {
   tag         Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   @@unique([lifehackId, tagId])
+  @@index([tagId])
+  @@index([lifehackId])
 }
 
 model Follow {
