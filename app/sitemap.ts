@@ -65,7 +65,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]
 
     // Dynamic lifehack pages
-    const lifehackPages = lifehacks.map((lifehack) => ({
+    const lifehackPages = lifehacks.map((lifehack: { id: string; updatedAt: Date }) => ({
       url: `${baseUrl}/lifehack/${lifehack.id}`,
       lastModified: lifehack.updatedAt,
       changeFrequency: 'weekly' as const,
@@ -73,7 +73,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
 
     // Dynamic user profile pages
-    const userPages = users.map((user) => ({
+    const userPages = users.map((user: { username: string; updatedAt: Date | null }) => ({
       url: `${baseUrl}/profile/${user.username}`,
       lastModified: user.updatedAt || new Date(),
       changeFrequency: 'weekly' as const,

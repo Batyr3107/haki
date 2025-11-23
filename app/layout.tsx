@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
+import Loading from "@/components/Loading";
+import Analytics from "@/components/Analytics";
+// import DatadogRUM from "@/components/DatadogRUM"; // Uncomment after installing @datadog/browser-rum
 
 export const metadata: Metadata = {
   title: {
@@ -59,11 +63,15 @@ export default function RootLayout({
         <Providers>
           <Navbar />
           <main className="flex-1">
-            {children}
+            <Suspense fallback={<Loading />}>
+              {children}
+            </Suspense>
           </main>
           <Footer />
           <ScrollToTop />
         </Providers>
+        <Analytics />
+        {/* <DatadogRUM /> */} {/* Uncomment after installing @datadog/browser-rum */}
       </body>
     </html>
   );

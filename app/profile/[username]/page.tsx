@@ -9,6 +9,7 @@ import Link from 'next/link'
 import LifehackCard from '@/components/LifehackCard'
 import FollowButton from '@/components/FollowButton'
 import Breadcrumbs from '@/components/Breadcrumbs'
+import Avatar from '@/components/Avatar'
 
 interface UserProfile {
   user: {
@@ -92,9 +93,11 @@ export default function ProfilePage({ params }: { params: { username: string } }
       <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
         <div className="flex items-start justify-between gap-6">
           <div className="flex items-start gap-6 flex-1">
-          <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-4xl font-bold">
-            {profile.user.name?.[0]?.toUpperCase() || profile.user.username[0].toUpperCase()}
-          </div>
+          <Avatar
+            name={profile.user.name || profile.user.username}
+            alt={`${profile.user.name || profile.user.username}'s avatar`}
+            size="xl"
+          />
 
           <div className="flex-1">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
